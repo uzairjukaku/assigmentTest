@@ -10,19 +10,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Schedule {
-  id           Int      @id @default(autoincrement())
-  studentId    Int
+model ClassSchedule {
+  id             Int      @id @default(autoincrement())
+  registrationId String   @unique
+  startTime      DateTime
+  endTime        DateTime
+  action         Action
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
   instructorId Int
-  classId      Int
-  startTime    DateTime @default(now())
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  classId   Int
+  classType ClassType @relation(fields: [classId], references: [id])
 }
 
-model ClassRegistration {
-  id             Int      @id @default(autoincrement())
-  registrationId Int
-  studentId      Int
-  instructorId   Int
-  classId        Int
-  startTime      DateTime @default(now())
+model Student {
+  id            Int             @id @default(autoincrement())
+  name          String
+  registrations ClassSchedule[]
+}
+
+model Instructor {
+  id        Int             @id @default(autoincrement())
+  name      String
+  schedules ClassSchedule[]
+}
+
+model ClassType {
+  id        Int             @id @default(autoincrement())
+  name      String
+  schedules ClassSchedule[]
+}
+
+enum Action {
+  new
+  update
+  delete
 }
