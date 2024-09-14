@@ -1,7 +1,4 @@
 import Prisma from "../../db/db.config.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
 import fs from "fs";
 import csv from "csv-parser";
 
@@ -9,7 +6,6 @@ const CLASS_DURATION_MINUTES =
   parseInt(process.env.CLASS_DURATION_MINUTES) || 60;
 
 const checkConflicts = async (studentId, instructorId, startTime, endTime) => {
-  // Check for conflicting schedules for both student and instructor
   const conflictStudent = await Prisma.classSchedule.findFirst({
     where: {
       studentId,
